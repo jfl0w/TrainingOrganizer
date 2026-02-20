@@ -57,9 +57,8 @@
   }
 
   header p {
-    font-size: 0.8rem;
-    color: var(--muted);
-    letter-spacing: 0.3em;
+    font-size: 1rem;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
     margin-top: 4px;
   }
@@ -87,7 +86,7 @@
   .phase-label {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 1.4rem;
-    letter-spacing: 0.4em;
+    letter-spacing: 0.2em;
     color: var(--muted);
     transition: color 0.3s;
     margin-bottom: 10px;
@@ -146,10 +145,9 @@
   }
 
   .phase-sub {
-    font-size: 0.75rem;
-    letter-spacing: 0.35em;
+    font-size: 0.85rem;
+    letter-spacing: 0.20em;
     text-transform: uppercase;
-    color: var(--muted);
     margin-top: 6px;
   }
 
@@ -162,7 +160,7 @@
   .matchup-title {
     font-family: 'Bebas Neue', sans-serif;
     font-size: 0.9rem;
-    letter-spacing: 0.35em;
+    letter-spacing: 0.25em;
     color: var(--muted);
     text-align: center;
     margin-bottom: 10px;
@@ -192,8 +190,9 @@
   }
 
   .matchup-card.upcoming {
-    border-color: #333;
-    opacity: 0.6;
+    border-color: var(--yellow);
+    box-shadow: 0 0 20px rgba(245,196,0,0.15);
+    opacity: 1;
   }
 
   .fighter-name {
@@ -286,7 +285,7 @@
     padding: 10px 14px;
     font-family: 'Bebas Neue', sans-serif;
     font-size: 0.85rem;
-    letter-spacing: 0.35em;
+    letter-spacing: 0.2em;
     color: var(--accent);
     border-bottom: 1px solid var(--border);
     text-transform: uppercase;
@@ -309,7 +308,6 @@
     font-size: 0.8rem;
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: var(--muted);
   }
 
   .setting-controls {
@@ -692,9 +690,7 @@
           </select>
         </div>
         <div class="setting-row">
-          <div class="setting-label">Number of Rotations
-            <span style="color:var(--muted);font-size:0.68rem;letter-spacing:0.1em"> (everyone works with each other once)</span>
-          </div>
+          <div class="setting-label">Number of Full Rotations</div>
           <div class="setting-controls">
             <input type="number" class="time-input" id="numRotations" value="1" min="1" max="20" style="width:70px" oninput="updateRotationHint()">
             <span style="font-size:0.78rem;color:var(--muted);letter-spacing:0.1em" id="rotationHint"></span>
@@ -725,7 +721,7 @@
 
     <!-- SCHEDULE PREVIEW -->
     <div class="sidebar-section" id="scheduleSection" style="display:none">
-      <div class="sidebar-section-header">📋 Round Schedule</div>
+      <div class="sidebar-section-header">📋 Partner Rotations</div>
       <div class="sidebar-section-body">
         <div class="schedule-list" id="scheduleList"></div>
         <div class="info-bar" id="scheduleInfo"></div>
@@ -1075,7 +1071,7 @@ function resetTimer() {
   timeRemaining = 0;
   warningFired = false;
   setPhaseClass('idle');
-  updateDisplay(0, 0, 'READY', '— SET UP & START —');
+  updateDisplay(0, 0, 'READY', '— SAFE TRAINING! —');
   document.getElementById('roundInfo').textContent = `ROUND 0 / ${schedule.length}`;
   document.getElementById('matchupDisplay').style.display = 'none';
   document.getElementById('infoBar').textContent = '';
@@ -1183,7 +1179,7 @@ const CIRC = 2 * Math.PI * 88; // 553
 function updateTimerRing() {
   const pct = totalPhaseTime > 0 ? timeRemaining / totalPhaseTime : 0;
   document.getElementById('progressCircle').style.strokeDashoffset = CIRC * (1 - pct);
-  document.getElementById('phaseLabel').textContent = currentPhase === 'active' ? 'ROUND' : currentPhase === 'warning' ? 'WARNING' : currentPhase === 'rest' ? 'REST' : 'READY';
+  document.getElementById('phaseLabel').textContent = currentPhase === 'active' ? 'GO!' : currentPhase === 'warning' ? 'WARNING' : currentPhase === 'rest' ? 'REST' : 'READY';
   document.getElementById('phaseSub').textContent = (currentPhase === 'rest' && !soloMode) ? '— NEXT MATCHUPS BELOW —' : '';
 }
 
@@ -1203,7 +1199,8 @@ function showMatchups(mode) {
   const title = document.getElementById('matchupTitle');
 
   if (mode === 'current' && currentRound < schedule.length) {
-    title.textContent = 'CURRENT MATCHUPS';
+    title.style.color = 'var(--green)';
+	title.textContent = 'CURRENT MATCHUPS';
     cards.innerHTML = schedule[currentRound].map(m => `
       <div class="matchup-card active">
         ${schedule[currentRound].length > 1 ? `<span class="space-label">SPACE ${m.space}</span>` : ''}
@@ -1218,7 +1215,8 @@ function showMatchups(mode) {
   } else if (mode === 'upcoming') {
     const next = currentRound + 1;
     if (next < schedule.length) {
-      title.textContent = 'UP NEXT — ROUND ' + (next + 1);
+      title.style.color = 'var(--yellow)';
+	  title.textContent = 'UP NEXT — ROUND ' + (next + 1);
       cards.innerHTML = schedule[next].map(m => `
         <div class="matchup-card upcoming">
           ${schedule[next].length > 1 ? `<span class="space-label">SPACE ${m.space}</span>` : ''}
@@ -1229,7 +1227,7 @@ function showMatchups(mode) {
       `).join('');
       display.style.display = '';
     } else {
-      title.textContent = 'NEXT — FINAL ROUND COMPLETE';
+      title.textContent = 'FINAL ROUND COMPLETED!';
       cards.innerHTML = `<div class="matchup-card" style="justify-content:center;color:var(--accent);font-family:'Bebas Neue',sans-serif;letter-spacing:0.2em">SESSION ENDS AFTER THIS REST</div>`;
       display.style.display = '';
     }
