@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Training Organizer</title>
+<title>TRAINING ORGANIZER</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:wght@300;400;600;700&family=Barlow:wght@300;400&display=swap');
 
@@ -305,8 +305,8 @@
   }
 
   .setting-label {
-    font-size: 0.72rem;
-    letter-spacing: 0.25em;
+    font-size: 0.8rem;
+    letter-spacing: 0.15em;
     text-transform: uppercase;
     color: var(--muted);
   }
@@ -530,15 +530,71 @@
     letter-spacing: 0.1em;
   }
 
-  .blink { animation: blink 0.5s step-end infinite; }
-  @keyframes blink { 50% { opacity: 0; } }
+  /* Solo Timer Toggle */
+  .solo-toggle {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    transition: border-color 0.2s, background 0.2s;
+    user-select: none;
+  }
+
+  .solo-toggle:hover { border-color: var(--accent); }
+  .solo-toggle.active { border-color: var(--accent); background: rgba(200,164,90,0.06); }
+
+  .solo-checkbox {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--border);
+    border-radius: 3px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    position: relative;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .solo-toggle.active .solo-checkbox {
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+
+  .solo-toggle.active .solo-checkbox::after {
+    content: '✓';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: #000;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .solo-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 0.2em;
+    color: var(--text);
+  }
+
+  .solo-sub {
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    margin-top: 2px;
+  }
 </style>
 </head>
 <body class="phase-idle">
 
 <header>
-  <h1>🥊 TRAINING ORGANIZER</h1>
-  <p>Training Timer &amp; Matchup Manager</p>
+  <h1>🥊 TRAINING ORGANIZER 🥊</h1>
+  <p>LMA Timer &amp; Partner Rotation Manager</p>
 </header>
 
 <div class="app-container">
@@ -583,17 +639,17 @@
         <div class="setting-row">
           <div class="setting-label"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--green);margin-right:6px;vertical-align:middle"></span>Round Duration</div>
           <div class="setting-controls">
-            <input type="number" class="time-input" id="roundMin" value="2" min="0" max="59" title="Minutes" oninput="updateRotationHint()">
+            <input type="number" class="time-input" id="roundMin" value="2" min="0" max="59" title="Minutes" oninput="updateRotationHint();updateSoloHint()">
             <span class="time-sep">:</span>
-            <input type="number" class="time-input" id="roundSec" value="0" min="0" max="59" title="Seconds" oninput="updateRotationHint()">
+            <input type="number" class="time-input" id="roundSec" value="0" min="0" max="59" title="Seconds" oninput="updateRotationHint();updateSoloHint()">
           </div>
         </div>
         <div class="setting-row">
           <div class="setting-label"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--red);margin-right:6px;vertical-align:middle"></span>Rest Duration</div>
           <div class="setting-controls">
-            <input type="number" class="time-input" id="restMin" value="1" min="0" max="59" oninput="updateRotationHint()">
+            <input type="number" class="time-input" id="restMin" value="1" min="0" max="59" oninput="updateRotationHint();updateSoloHint()">
             <span class="time-sep">:</span>
-            <input type="number" class="time-input" id="restSec" value="0" min="0" max="59" oninput="updateRotationHint()">
+            <input type="number" class="time-input" id="restSec" value="0" min="0" max="59" oninput="updateRotationHint();updateSoloHint()">
           </div>
         </div>
         <div class="setting-row">
@@ -624,7 +680,7 @@
       <div class="sidebar-section-header">⚙ Matchup Options</div>
       <div class="sidebar-section-body">
         <div class="setting-row">
-          <div class="setting-label">Training Pitches (simultaneous pairs)</div>
+          <div class="setting-label">Training Pitches (SIMULTANEOUS PAIRS)</div>
           <input type="number" class="time-input" id="numSpaces" value="1" min="1" max="10" style="width:70px" oninput="updateRotationHint()">
         </div>
         <div class="setting-row">
@@ -636,14 +692,33 @@
         </div>
         <div class="setting-row">
           <div class="setting-label">Number of Rotations
-            <span style="color:var(--muted);font-size:0.68rem;letter-spacing:0.1em"> — 1 rotation = everyone spars once</span>
+            <span style="color:var(--muted);font-size:0.68rem;letter-spacing:0.1em"> (1 rotation = everyone works with each other once)</span>
           </div>
           <div class="setting-controls">
             <input type="number" class="time-input" id="numRotations" value="1" min="1" max="20" style="width:70px" oninput="updateRotationHint()">
             <span style="font-size:0.78rem;color:var(--muted);letter-spacing:0.1em" id="rotationHint"></span>
           </div>
         </div>
-        <button class="btn-generate" onclick="generateSchedule()">GENERATE SCHEDULE</button>
+        <label class="solo-toggle" onclick="toggleSoloMode()">
+          <div class="solo-checkbox" id="soloCheckbox"></div>
+          <div>
+            <div class="solo-label">SOLO ROUND TIMER</div>
+            <div class="solo-sub">Ignore matchups</div>
+          </div>
+        </label>
+        <div id="matchupFields">
+          <button class="btn-generate" onclick="generateSchedule()">GENERATE SCHEDULE</button>
+        </div>
+        <div id="soloStartWrap" style="display:none">
+          <div class="setting-row">
+            <div class="setting-label">Number of Rounds</div>
+            <div class="setting-controls">
+              <input type="number" class="time-input" id="soloRounds" value="5" min="1" max="99" style="width:70px" oninput="updateSoloHint()">
+              <span style="font-size:0.78rem;color:var(--muted);letter-spacing:0.1em" id="soloHint"></span>
+            </div>
+          </div>
+          <button class="btn-generate" onclick="startSoloTimer()">START SOLO TIMER</button>
+        </div>
       </div>
     </div>
 
@@ -897,7 +972,57 @@ function renderSchedulePreview() {
   info.textContent = `${schedule.length} rounds total`;
 }
 
-// ===== TIMER LOGIC =====
+// ===== SOLO MODE =====
+let soloMode = false;
+let soloTotalRounds = 5;
+
+function toggleSoloMode() {
+  soloMode = !soloMode;
+  const toggle = document.querySelector('.solo-toggle');
+  const matchupFields = document.getElementById('matchupFields');
+  const soloStartWrap = document.getElementById('soloStartWrap');
+  const scheduleSection = document.getElementById('scheduleSection');
+
+  toggle.classList.toggle('active', soloMode);
+  matchupFields.style.display = soloMode ? 'none' : '';
+  soloStartWrap.style.display = soloMode ? '' : 'none';
+
+  // Hide schedule section and matchup display when switching modes
+  if (soloMode) {
+    scheduleSection.style.display = 'none';
+    document.getElementById('matchupDisplay').style.display = 'none';
+    resetTimer();
+  }
+  updateSoloHint();
+}
+
+function updateSoloHint() {
+  const hint = document.getElementById('soloHint');
+  if (!hint) return;
+  const rounds = parseInt(document.getElementById('soloRounds').value) || 1;
+  const roundSec = (parseInt(document.getElementById('roundMin').value)||0)*60 + (parseInt(document.getElementById('roundSec').value)||0);
+  const restSec  = (parseInt(document.getElementById('restMin').value)||0)*60  + (parseInt(document.getElementById('restSec').value)||0);
+  const totalSec = rounds * roundSec + Math.max(0, rounds - 1) * restSec;
+  const totalMin = Math.round(totalSec / 60);
+  hint.textContent = `≈ ${totalMin} min`;
+}
+
+function startSoloTimer() {
+  soloTotalRounds = Math.max(1, parseInt(document.getElementById('soloRounds').value) || 1);
+  // Build a dummy schedule of empty rounds
+  schedule = Array.from({ length: soloTotalRounds }, () => []);
+  resetTimer();
+  // hide schedule section (no matchups)
+  document.getElementById('scheduleSection').style.display = 'none';
+  document.getElementById('matchupDisplay').style.display = 'none';
+  // kick off
+  getAudio();
+  beginRound();
+  document.getElementById('btnStart').style.display = 'none';
+  document.getElementById('btnStop').style.display = '';
+}
+
+
 function getRoundDuration() {
   return (parseInt(document.getElementById('roundMin').value)||0) * 60
        + (parseInt(document.getElementById('roundSec').value)||0);
@@ -911,6 +1036,10 @@ function getWarnSec() {
 }
 
 function startTimer() {
+  if (soloMode) {
+    startSoloTimer();
+    return;
+  }
   if (schedule.length === 0) {
     alert('Please generate a schedule first.');
     return;
@@ -949,7 +1078,7 @@ function resetTimer() {
   document.getElementById('roundInfo').textContent = `ROUND 0 / ${schedule.length}`;
   document.getElementById('matchupDisplay').style.display = 'none';
   document.getElementById('infoBar').textContent = '';
-  renderSchedulePreview();
+  if (!soloMode && schedule.length > 0) renderSchedulePreview();
 }
 
 function beginRound() {
@@ -965,7 +1094,7 @@ function beginRound() {
   playBell(1);
   setPhaseClass('active');
   updateRoundInfo();
-  showMatchups('current');
+  if (!soloMode) showMatchups('current');
   running = true;
   timerInterval = setInterval(tick, 1000);
 }
@@ -978,10 +1107,9 @@ function beginRest() {
 
   playBell(2);
   setPhaseClass('rest');
-  showMatchups('upcoming');
+  if (!soloMode) showMatchups('upcoming');
 
   if (timeRemaining <= 0) {
-    // no rest, go straight to next round
     currentRound++;
     beginRound();
     return;
@@ -1055,7 +1183,7 @@ function updateTimerRing() {
   const pct = totalPhaseTime > 0 ? timeRemaining / totalPhaseTime : 0;
   document.getElementById('progressCircle').style.strokeDashoffset = CIRC * (1 - pct);
   document.getElementById('phaseLabel').textContent = currentPhase === 'active' ? 'ROUND' : currentPhase === 'warning' ? 'WARNING' : currentPhase === 'rest' ? 'REST' : 'READY';
-  document.getElementById('phaseSub').textContent = currentPhase === 'rest' ? '— NEXT MATCHUPS BELOW —' : '';
+  document.getElementById('phaseSub').textContent = (currentPhase === 'rest' && !soloMode) ? '— NEXT MATCHUPS BELOW —' : '';
 }
 
 function updateTimerRingRaw(remaining, total) {
