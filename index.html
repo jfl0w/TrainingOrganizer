@@ -594,7 +594,7 @@
 
 <header>
   <h1>🥊 TRAINING ORGANIZER</h1>
-  <p>LMA Timer &amp; Partner Rotation Manager</p>
+  <p>Training Timer &amp; Partner Rotation Manager</p>
 </header>
 
 <div class="app-container">
@@ -667,7 +667,7 @@
       <div class="sidebar-section-header">🥊 Participants</div>
       <div class="sidebar-section-body">
         <div class="participant-input-row">
-          <input type="text" class="text-input" id="participantInput" placeholder="Fighter name..." maxlength="24"
+          <input type="text" class="text-input" id="participantInput" placeholder="Player name..." maxlength="24"
             onkeydown="if(event.key==='Enter') addParticipant()">
           <button class="btn-add" onclick="addParticipant()">ADD</button>
         </div>
@@ -692,7 +692,7 @@
         </div>
         <div class="setting-row">
           <div class="setting-label">Number of Rotations
-            <span style="color:var(--muted);font-size:0.68rem;letter-spacing:0.1em"> (1 rotation = everyone works with each other once)</span>
+            <span style="color:var(--muted);font-size:0.68rem;letter-spacing:0.1em"> (where everyone works with each other once)</span>
           </div>
           <div class="setting-controls">
             <input type="number" class="time-input" id="numRotations" value="1" min="1" max="20" style="width:70px" oninput="updateRotationHint()">
@@ -703,7 +703,7 @@
           <div class="solo-checkbox" id="soloCheckbox"></div>
           <div>
             <div class="solo-label">SOLO ROUND TIMER</div>
-            <div class="solo-sub">Ignore matchups</div>
+            <div class="solo-sub">Ignore Matchups</div>
           </div>
         </label>
         <div id="matchupFields">
